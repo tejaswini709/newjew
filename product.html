@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sparkles - Products</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; color:#000; background:#fff; }
+    a { text-decoration:none; color:inherit; }
+
+    /* Header */
+    #header{
+      background-color:#FFEBEB;
+      width:100%;
+      height:120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding:0 20px;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+    #search{ border: 1px solid #ccc; border-radius: 25px; padding: 10px 14px; height:42px; width: min(800px, 70vw); }
+    #searchButton{ border: none; background: #000; color: #fff; border-radius: 25px; height: 42px; padding: 0 18px; cursor: pointer; }
+
+    /* Icons */
+    .corner-icons {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      font-size:24px;
+    }
+    .icon { cursor:pointer; color:#000; }
+    .cart-count {
+      background:rgb(19, 19, 19);
+      color:#fff;
+      border-radius:50%;
+      padding:2px 6px;
+      font-size:12px;
+      position:absolute;
+      top:8px;
+      right:45px;
+    }
+
+    /* Menu */
+    .main_menu { display:flex; justify-content:center; background:#fff; }
+    .main_menu nav > ul { list-style:none; padding:0; margin:0; }
+    .main_menu nav > ul > li { display:inline-block; }
+    .main_menu nav > ul > li > a { display:inline-block; padding:12px 18px; }
+    .main_menu nav > ul > li:hover > a { color:#a8741a; }
+
+    /* Product Grid */
+    .product-grid {
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:24px;
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .product-card {
+      background:#FFEBEB;
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:14px;
+      text-align:center;
+    }
+    .product-card img {
+      width:100%;
+      height:250px;
+      object-fit:cover;
+      border-radius:8px;
+    }
+    .add-btn {
+      margin-top:10px;
+      background:#000;
+      color:#fff;
+      border:none;
+      padding:10px 16px;
+      border-radius:6px;
+      cursor:pointer;
+    }
+    .add-btn:hover { opacity:0.8; }
+
+    /* Footer */
+    #footer { background:#FFEBEB; color:#000; text-align:center; padding:10px; margin-top:20px; font-size:14px; }
+
+    @media(max-width:780px){
+      .product-grid{ grid-template-columns:repeat(2,1fr);}
+    }
+    @media(max-width:520px){
+      .product-grid{ grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div id="header">
+    <input type="search" id="search" placeholder="Search...">
+    <button id="searchButton">Search</button>
+  </div>
+
+  <!-- Menu -->
+  <div class="main_menu">
+    <nav>
+      <ul>
+        <li><a href="product.html?category=all">ALL JEWELLERY</a></li>
+        <li><a href="product.html?category=gold">GOLD</a></li>
+        <li><a href="product.html?category=diamond">DIAMOND</a></li>
+        <li><a href="product.html?category=earring">EARRINGS</a></li>
+        <li><a href="product.html?category=collections">COLLECTIONS</a></li>
+        <li><a href="product.html?category=wedding">WEDDING</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Icons -->
+  <div class="corner-icons">
+    <span><a href="cart.html" class="icon cart" title="Cart">🛒</a></span>
+    <span id="cartCount" class="cart-count">0</span>
+    <span><a href="login.html" class="icon account" title="Account">👤</a></span>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="product-grid" id="productGrid"></div>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <p>© 2025 MyJewellery Store. All rights reserved.</p>
+  </footer>
+<script>
+  // 🛍 Full Products Data with Cost & Gram
+  const products = {
+    all: [
+      {img:"jew photos/ring2.jpg", name:"Ring 1", cost:"₹25,000", gram:"4g"},
+      {img:"jew photos/bracelet2.jpg", name:"Bracelet 1", cost:"₹18,000", gram:"6g"},
+      {img:"jew photos/earing11.jpg", name:"Earring 1", cost:"₹12,000", gram:"3g"}
+    ],
+    gold: [
+      {img:"jew photos/bangle9.jpg", name:"Gold Bangle", cost:"₹32,000", gram:"10g"},
+      {img:"jew photos/necklace1.jpg", name:"Gold Necklace", cost:"₹75,000", gram:"25g"},
+      {img:"jew photos/thali1.jpg", name:"Mangalsutra", cost:"₹55,000", gram:"18g"}
+    ],
+    diamond: [
+      {img:"jew photos/couple ring4.jpg", name:"Diamond Ring", cost:"₹85,000", gram:"5g"},
+      {img:"jew photos/pendent7.jpg", name:"Diamond Pendant", cost:"₹45,000", gram:"3.5g"},
+      {img:"jew photos/image3.jpg", name:"Diamond Chain", cost:"₹1,20,000", gram:"12g"}
+    ],
+    earring: [
+      {img:"jew photos/earing11.jpg", name:"Earring 1", cost:"₹15,000", gram:"4g"},
+      {img:"jew photos/jhumka1.jpg", name:"Jhumka", cost:"₹20,000", gram:"6g"},
+      {img:"jew photos/earing12.jpg", name:"Earring 2", cost:"₹18,500", gram:"5g"}
+    ],
+    bracelet: [
+      {img:"jew photos/bracelet2.jpg", name:"Bracelet 1", cost:"₹22,000", gram:"7g"},
+      {img:"jew photos/braclet.jpg", name:"Trendy Bracelet", cost:"₹25,000", gram:"8g"},
+      {img:"jew photos/bracelet3.jpg", name:"Bracelet 2", cost:"₹28,500", gram:"9g"}
+    ],
+    ring: [
+      {img:"jew photos/ring2.jpg", name:"Gold Ring", cost:"₹26,000", gram:"5g"},
+      {img:"jew photos/couple ring4.jpg", name:"Couple Ring", cost:"₹40,000", gram:"7g"},
+      {img:"jew photos/ring3.jpg", name:"Diamond Ring", cost:"₹60,000", gram:"6g"}
+    ],
+    chain: [
+      {img:"jew photos/image3.jpg", name:"Gold Chain", cost:"₹55,000", gram:"15g"},
+      {img:"jew photos/banner2.jpg", name:"Special Chain", cost:"₹1,10,000", gram:"22g"},
+      {img:"jew photos/chain2.jpg", name:"Lightweight Chain", cost:"₹38,000", gram:"10g"}
+    ],
+    pendant: [
+      {img:"jew photos/pendent7.jpg", name:"Diamond Pendant", cost:"₹45,000", gram:"3.5g"},
+      {img:"jew photos/pendent2.jpg", name:"Gold Pendant", cost:"₹30,000", gram:"5g"},
+      {img:"jew photos/pendent3.jpg", name:"Floral Pendant", cost:"₹35,000", gram:"6g"}
+    ],
+    nosepin: [
+      {img:"jew photos/nosepin1.jpg", name:"Nosepin 1", cost:"₹12,000", gram:"2g"},
+      {img:"jew photos/nosepin2.jpg", name:"Nosepin 2", cost:"₹15,500", gram:"2.5g"},
+      {img:"jew photos/nosepin3.jpg", name:"Diamond Nosepin", cost:"₹20,000", gram:"3g"}
+    ],
+    mangalsutra: [
+      {img:"jew photos/thali1.jpg", name:"Traditional Thali", cost:"₹60,000", gram:"20g"},
+      {img:"jew photos/mangalsutra1.jpg", name:"Gold Mangalsutra", cost:"₹70,000", gram:"22g"},
+      {img:"jew photos/mangalsutra2.jpg", name:"Diamond Mangalsutra", cost:"₹95,000", gram:"28g"}
+    ],
+    "toe-ring": [
+      {img:"jew photos/toering1.jpg", name:"Toe Ring 1", cost:"₹8,000", gram:"2g"},
+      {img:"jew photos/toering2.jpg", name:"Toe Ring 2", cost:"₹10,000", gram:"3g"},
+      {img:"jew photos/toering3.jpg", name:"Silver Toe Ring", cost:"₹12,500", gram:"4g"}
+    ],
+    collections: [
+      {img:"jew photos/banner2.jpg", name:"Special Chain", cost:"₹1,10,000", gram:"22g"},
+      {img:"jew photos/braclet.jpg", name:"Trendy Bracelet", cost:"₹25,000", gram:"8g"},
+      {img:"jew photos/ring2.jpg", name:"Couple Ring", cost:"₹40,000", gram:"7g"}
+    ],
+    wedding: [
+      {img:"jew photos/thali1.jpg", name:"Traditional Thali", cost:"₹60,000", gram:"20g"},
+      {img:"jew photos/necklace1.jpg", name:"Wedding Necklace", cost:"₹90,000", gram:"30g"},
+      {img:"jew photos/bangle9.jpg", name:"Wedding Bangle", cost:"₹35,000", gram:"12g"}
+    ]
+  };
+
+  // ✅ Render products
+function renderProducts(category){
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = "";
+  (products[category] || []).forEach(p=>{
+    grid.innerHTML += `
+      <div class="product-card">
+        <img src="${p.img}" alt="${p.name}">
+        <h4>${p.name}</h4>
+        <p><strong>Price:</strong> ${p.cost}</p>
+        <p><strong>Weight:</strong> ${p.gram}</p>
+        <button class="add-btn" onclick="addToCart('${p.name}','${p.img}','${p.cost}','${p.gram}')">
+          Add to Cart
+        </button>
+      </div>
+    `;
+  });
+}
+
+// ✅ Add to cart
+function addToCart(name,img,cost,gram){
+  let cart = JSON.parse(localStorage.getItem("cart")||"[]");
+  cart.push({name,img,cost,gram});
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
+}
+
+// ✅ Update cart icon
+function updateCartCount(){
+  let cart = JSON.parse(localStorage.getItem("cart")||"[]");
+  document.getElementById("cartCount").textContent = cart.length;
+}
+
+  // ✅ Search mapping (same as home page)
+  const searchMap = {
+    "bangle":"bangle","bangles":"bangle",
+    "bracelet":"bracelet","bracelets":"bracelet","braclet":"bracelet",
+    "ring":"ring","rings":"ring","couple ring":"ring","engagement ring":"ring","matching ring":"ring",
+    "earring":"earring","earrings":"earring","jhumka":"earring","jhumkas":"earring",
+    "chain":"chain","chains":"chain","necklace":"necklace","necklaces":"necklace",
+    "pendant":"pendant","pendants":"pendant",
+    "nose pin":"nosepin","nosepin":"nosepin",
+    "mangal sutra":"mangalsutra","mangalsutra":"mangalsutra","thali":"mangalsutra",
+    "toe ring":"toe-ring","toe rings":"toe-ring","toering":"toe-ring",
+    "gold":"gold","diamond":"diamond","wedding":"wedding","collections":"collections","all jewellery":"all","all":"all"
+  };
+
+  function searchProducts(){
+    const raw = document.getElementById('search').value.trim().toLowerCase();
+    const grid = document.getElementById("productGrid");
+    if(!raw){ return; }
+
+    // If search term maps to category
+    if(searchMap[raw]){
+      renderProducts(searchMap[raw]);
+      return;
+    }
+
+    // Try word by word
+    const words = raw.split(/\s+/);
+    for(const w of words){
+      if(searchMap[w]){
+        renderProducts(searchMap[w]);
+        return;
+      }
+    }
+
+    // If nothing matches → show "no results"
+    grid.innerHTML = `<p>No products found for "${raw}"</p>`;
+  }
+
+  // ✅ Event listeners
+  document.getElementById("searchButton").addEventListener("click", searchProducts);
+  document.getElementById("search").addEventListener("keypress", function(e){
+    if(e.key === "Enter"){ searchProducts(); }
+  });
+
+  // ✅ Load category from URL or search query
+  const params = new URLSearchParams(window.location.search);
+  const cat = params.get("category");
+  const search = params.get("search");
+
+  if(cat){
+    renderProducts(cat);
+  } else if(search){
+    renderProducts(searchMap[search] || "all");
+  } else {
+    renderProducts("all");
+  }
+
+  updateCartCount();
+</script>
+</body>
+</html>

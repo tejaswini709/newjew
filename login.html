@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<style>
+    body {
+        text-align: center;
+        margin: 100px;
+        background-image: url("../jew photos/login model.jpg");
+        background-size: cover;
+    }
+    .signup-button {
+        border: 1px solid black;
+        padding: 5px 10px;
+        display: inline-block;
+        text-decoration: none;
+        color: black;
+        cursor: pointer;
+    }
+    .signup-button:hover {
+        background-color: lightgray;
+        box-shadow: 0 0 5px #FFEBEB, 0 0 25px #FFEBEB, 0 0 50px #FFEBEB, 0 0 100px #FFEBEB;
+    }
+    form {
+        padding: 20px;
+        max-width: 300px;
+        margin-left: 700px;
+        background-color: transparent;
+        transition: background-color 0.3s;
+    }
+    form:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        border: 2px solid pink;
+    }
+    .admin-login-button {
+        text-decoration: underline;
+        cursor: pointer;
+        margin-left: 400px;
+        font-size: 20px;
+        padding: 10px 20px;
+        border: 2px solid transparent;
+        border-radius: 5px;
+        display: inline-block;
+    }
+    .admin-login-button:hover {
+        color: #000;
+        border-color: #FFEBEB;
+        box-shadow: 0 0 5px #FFEBEB, 0 0 25px #FFEBEB, 0 0 50px #FFEBEB, 0 0 100px #FFEBEB;
+    }
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 1; 
+        left: 0; top: 0; 
+        width: 100%; height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+        background-color: white;
+        margin: 15% auto; 
+        padding: 20px;
+        border: 1px solid #888;
+        width: 300px; 
+        border-radius: 10px;
+    }
+    .close {
+        color: red;
+        float: right;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<form>
+    NAME: <input type="text" id="name"><br><br>
+    EMAIL ID: <input type="text" id="mail"><br><br>
+    PASSWORD: <input type="password" id="password"><br><br>
+    <div class="signup-button" onclick="loginUser();">Login</div><br><p>OR</p>
+    <div class="signup-button" onclick="openRegisterModal();">Signup</div>
+</form>
+
+<br>
+<div class="admin-login-button" onclick="window.location.href = 'adminlogin.html';">Admin Login</div>
+
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeRegisterModal()">&times;</span>
+        <h3>Register</h3>
+        NAME: <input type="text" id="regName"><br><br>
+        EMAIL ID: <input type="text" id="regMail"><br><br>
+        PASSWORD: <input type="password" id="regPassword"><br><br>
+        <div class="signup-button" onclick="registerUser();">Register</div>
+    </div>
+</div>
+
+<script>
+function openRegisterModal() {
+    document.getElementById("registerModal").style.display = "block";
+}
+function closeRegisterModal() {
+    document.getElementById("registerModal").style.display = "none";
+}
+
+function registerUser(){
+    var name = document.getElementById("regName").value.trim();
+    var email = document.getElementById("regMail").value.trim();
+    var password = document.getElementById("regPassword").value.trim();
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(name === "" || email === "" || password === ""){
+        alert("Kindly fill out all the fields.");
+        return;
+    }
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+    let existingUser = users.find(user => user.email === email);
+    if(existingUser){
+        alert("Email already registered. Please login.");
+        closeRegisterModal();
+        return;
+    }
+
+    users.push({ name: name, email: email, password: password });
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Registration successful! Please login.");
+    closeRegisterModal();
+}
+
+function loginUser(){
+    var name = document.getElementById("name").value.trim();
+    var email = document.getElementById("mail").value.trim();
+    var password = document.getElementById("password").value.trim();
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(name === "" || email === "" || password === ""){
+        alert("Kindly fill out all the fields.");
+        return;
+    }
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+    let validUser = users.find(user => user.email === email && user.password === password);
+
+    if(validUser){
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("username", name);
+
+        // Redirect to intended page
+        let redirectPage = localStorage.getItem("redirectAfterLogin") || "home.html";
+        localStorage.removeItem("redirectAfterLogin");
+        window.location.href = redirectPage;
+    } else {
+        alert("Invalid credentials. Please register if you don't have an account.");
+    }
+}
+</script>
+
+</body>
+</html>

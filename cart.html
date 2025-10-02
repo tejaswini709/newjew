@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #FFEBEB;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header */
+    #header {
+      background-color:#FFEBEB;
+      width:100%;
+      height:80px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:0 20px;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+    #header h2 { margin:0; }
+    #cartIcon {
+      position: relative;
+      cursor: pointer;
+    }
+    #cartCount {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+
+    h2 {
+      text-align:center;
+      margin:20px 0;
+    }
+
+    /* Cart items */
+    .cart-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      padding: 20px;
+    }
+    .cart-item {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .cart-item img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .cart-item h4 { margin: 5px 0; }
+    .cart-item p { margin: 2px 0; }
+    .remove-btn {
+      background: black;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    /* Customization box */
+    .custom-input {
+      margin-top: 8px;
+      padding: 6px;
+      width: 90%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    /* Bill Summary */
+    .bill-summary {
+      background: white;
+      margin: 20px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .buy-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 25px;
+      background: #151514;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .buy-btn:hover {
+      background: #b44c7b;
+    }
+
+    /* Footer */
+    footer {
+      background:#222;
+      color:#fff;
+      text-align:center;
+      padding:15px;
+      margin-top:20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div id="header">
+    <h2>🛍️ My Cart</h2>
+    <div id="cartIcon">
+      <span id="cartCount">0</span>
+    </div>
+  </div>
+
+  <!-- Cart Items -->
+  <h2>Your Items</h2>
+  <div class="cart-container" id="cartContainer"></div>
+
+  <!-- Bill Summary -->
+  <div class="bill-summary" id="billSummary">
+    Total Price: ₹0 | Total Weight: 0 gm
+    <br>
+    <button class="buy-btn" onclick="buyNow()">Buy Now</button>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 My Jewellery Store. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // ✅ Load Cart
+    function loadCart(){
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const container = document.getElementById("cartContainer");
+      const bill = document.getElementById("billSummary");
+      container.innerHTML = "";
+
+      if(cart.length === 0){
+        container.innerHTML = "<p style='grid-column:1/-1;text-align:center;'>Your cart is empty.</p>";
+        bill.innerHTML = "Total Price: ₹0 | Total Weight: 0 gm <br><button class='buy-btn' disabled>Buy Now</button>";
+        return;
+      }
+
+      let totalPrice = 0;
+      let totalGram = 0;
+
+      cart.forEach((item, index) => {
+        let price = parseFloat(item.cost.toString().replace(/[^\d.]/g,"")) || 0;
+        let gram = parseFloat(item.gram.toString().replace(/[^\d.]/g,"")) || 0;
+
+        totalPrice += price;
+        totalGram += gram;
+
+        container.innerHTML += `
+          <div class="cart-item">
+            <img src="${item.img}" alt="${item.name}">
+            <h4>${item.name}</h4>
+            <p><strong>Price:</strong> ${item.cost}</p>
+            <p><strong>Weight:</strong> ${item.gram}</p>
+            <input type="text" class="custom-input" placeholder="Enter customization..." 
+              value="${item.custom || ''}" 
+              oninput="saveCustomization(${index}, this.value)">
+            <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+          </div>
+        `;
+      });
+
+      bill.innerHTML = `Total Price: ₹${totalPrice} | Total Weight: ${totalGram} gm 
+                        <br><button class="buy-btn" onclick="buyNow()">Buy Now</button>`;
+      updateCartCount();
+    }
+
+    // ✅ Save customization to cart
+    function saveCustomization(index, text){
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart[index].custom = text;
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+
+    // ✅ Remove from cart
+    function removeFromCart(index){
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart.splice(index,1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    // ✅ Update cart count
+    function updateCartCount(){
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      document.getElementById("cartCount").textContent = cart.length;
+    }
+
+   function buyNow(){
+  if(localStorage.getItem("isLoggedIn") === "true"){
+    window.location.href = "billing.html";
+  } else {
+    alert("Please login to buy.");
+    window.location.href = "login.html";
+  }
+}
+
+
+
+
+
+    loadCart();
+  </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sparkles</title>
+  <style>
+    /* ===== Base ===== */
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Arial, sans-serif; color:#000; background:#fff; }
+    a { text-decoration:none; color:inherit; }
+
+    /* ===== Header ===== */
+    #header{
+      background-color:#FFEBEB;
+      width:100%;
+      height:120px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding:0 20px;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+    #search{
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      padding: 10px 14px;
+      height:42px;
+      width: min(800px, 70vw);
+    }
+
+    #searchButton{
+      border: none;
+      background: #000;
+      color: #fff;
+      border-radius: 25px;
+      height: 42px;
+      padding: 0 18px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ===== Corner Icons ===== */
+    .corner-icons {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      font-size:24px;
+    }
+    .icon { cursor:pointer; color:#000; }
+
+    /* ===== Main Menu (no dropdowns) ===== */
+    .main_menu { display:flex; justify-content:center; }
+    .main_menu nav > ul { list-style:none; padding:0; margin:0; }
+    .main_menu nav > ul > li { display:inline-block; }
+    .main_menu nav > ul > li > a { display:inline-block; padding:12px 18px; }
+    .main_menu nav > ul > li:hover > a { color:#a8741a; }
+
+    /* ===== Home Grid ===== */
+    .homeImage { padding:24px; }
+    .home-grid {
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:24px;
+      max-width: 1400px;
+      margin: 0 auto 60px;
+    }
+    .home-card {
+      display:block;
+      border:1px solid #ddd;
+      border-radius:10px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .home-card img{
+      width:100%;
+      height:300px;
+      object-fit:cover;
+      display:block;
+    }
+.cart {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -12px;
+  background: rgb(16, 16, 16);
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  padding: 2px 6px;
+}
+
+    /* ===== Footer ===== */
+    #footer {
+      background:#FFEBEB;
+      color: #000;
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px){
+      .home-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 780px){
+      #search { width: 100%; }
+      .home-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 520px){
+      .home-grid { grid-template-columns: 1fr; }
+      .corner-icons { font-size:22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+<div id="header">
+  <!-- Brand / Logo -->
+  <div class="logo">✨ Sparkle</div>
+
+  <!-- Search -->
+  <input type="search" id="search" placeholder="Search...">
+  <button id="searchButton">Search</button>
+</div>
+
+<!-- Navigation Menu -->
+<div class="main_menu">
+  <nav>
+    <ul>
+      <li><a href="product.html?category=all">ALL JEWELLERY</a></li>
+      <li><a href="product.html?category=gold">GOLD</a></li>
+      <li><a href="product.html?category=diamond">DIAMOND</a></li>
+      <li><a href="product.html?category=earring">EARINGS</a></li>
+      <li><a href="product.html?category=collections">COLLECTIONS</a></li>
+      <li><a href="product.html?category=wedding">WEDDING</a></li>
+    </ul>
+  </nav>
+</div>
+
+<!-- Icons -->
+<div class="corner-icons">
+  <a href="cart.html" class="icon cart" title="Cart">
+    🛒<span id="cartCount" class="cart-count">0</span>
+  </a>
+  <a href="login.html" class="icon account" title="Account">👤</a>
+</div>
+
+
+<!-- Home Product Thumbnails -->
+<div class="homeImage">
+  <div class="home-grid">
+    <!-- Bracelet -->
+    <a class="home-card" href="product.html?category=bracelet">
+      <img src="../jew photos/bracelet2.jpg" alt="Bracelet">
+    </a>
+    <!-- Ring -->
+    <a class="home-card" href="product.html?category=ring">
+      <img src="../jew photos/ring2.jpg" alt="Ring">
+    </a>
+    <!-- Chain -->
+    <a class="home-card" href="product.html?category=chain">
+      <img src="../jew photos/banner2.jpg" alt="Chain">
+    </a>
+    <!-- Bangle -->
+    <a class="home-card" href="product.html?category=bangle">
+      <img src="../jew photos/bangle9.jpg" alt="Bangle">
+    </a>
+    <!-- Couple Ring -->
+    <a class="home-card" href="product.html?category=ring">
+      <img src="../jew photos/couple ring4.jpg" alt="Couple Ring">
+    </a>
+    <!-- Chain -->
+    <a class="home-card" href="product.html?category=chain">
+      <img src="../jew photos/image3.jpg" alt="Chain Design">
+    </a>
+    <!-- Pendant -->
+    <a class="home-card" href="product.html?category=pendant">
+      <img src="../jew photos/pendent7.jpg" alt="Pendant">
+    </a>
+    <!-- Earring -->
+    <a class="home-card" href="product.html?category=earring">
+      <img src="../jew photos/earing11.jpg" alt="Earring">
+    </a>
+    <!-- Nosepin -->
+    <a class="home-card" href="product.html?category=nosepin">
+      <img src="../jew photos/nosepin.jpg" alt="Nosepin">
+    </a>
+    <!-- Bracelet -->
+    <a class="home-card" href="product.html?category=bracelet">
+      <img src="../jew photos/braclet.jpg" alt="Bracelet">
+    </a>
+    <!-- Mangalsutra -->
+    <a class="home-card" href="product.html?category=mangalsutra">
+      <img src="../jew photos/thali1.jpg" alt="Mangalsutra">
+    </a>
+    <!-- Necklace -->
+    <a class="home-card" href="product.html?category=necklace">
+      <img src="../jew photos/necklace1.jpg" alt="Necklace">
+    </a>
+  </div>
+</div>
+
+
+  <!-- Search JS -->
+  <script>
+    (function(){
+      const map = {
+        "bangle":"bangle","bangles":"bangle",
+        "bracelet":"bracelet","bracelets":"bracelet","braclet":"bracelet",
+        "ring":"ring","rings":"ring","couple ring":"couple-ring","engagement ring":"engagement-ring","matching ring":"matching-ring",
+        "earring":"earring","earrings":"earring","jhumka":"jhumka","jhumkas":"jhumka",
+        "chain":"chain","chains":"chain","necklace":"necklace","necklaces":"necklace","matching necklace":"matching-necklace",
+        "pendant":"pendant","pendants":"pendant",
+        "nose pin":"nosepin","nosepin":"nosepin",
+        "mangal sutra":"mangalsutra","mangalsutra":"mangalsutra","thali":"mangalsutra",
+        "toe ring":"toe-ring","toe rings":"toe-ring","toering":"toe-ring",
+        "gold":"gold","diamond":"diamond","wedding":"wedding","collections":"collections","all jewellery":"all","all":"all"
+      };
+
+      function goSearch(){
+        const raw = document.getElementById('search').value.trim().toLowerCase();
+        if(!raw){ return; }
+        if(map[raw]){
+          window.location.href = "product.html?category=" + encodeURIComponent(map[raw]);
+          return;
+        }
+        const words = raw.split(/\s+/);
+        for(const w of words){
+          if(map[w]){
+            window.location.href = "product.html?category=" + encodeURIComponent(map[w]);
+            return;
+          }
+        }
+        window.location.href = "product.html?search=" + encodeURIComponent(raw);
+      }
+
+      document.getElementById('searchButton').addEventListener('click', goSearch);
+      document.getElementById('search').addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){ goSearch(); }
+      });
+    })();
+    function updateCartCount(){
+    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    document.getElementById("cartCount").textContent = cart.length;
+  }
+  updateCartCount();
+  </script>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <p>© 2025 MyJewellery Store. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
