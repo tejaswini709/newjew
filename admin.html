@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - Pinch Pink Theme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #ffe6f0;
+            padding: 20px;
+            color: #4a4a4a;
+        }
+
+        h2 {
+            color: #d6336c;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #d6336c;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 2px 2px 12px rgba(0,0,0,0.1);
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        input {
+            width: 200px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        button {
+            background: #d6336c;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #b52a58;
+        }
+
+        .product, .order {
+            border: 1px solid #ffb6c1;
+            border-radius: 10px;
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 2px 2px 12px rgba(0,0,0,0.1);
+        }
+
+        img {
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .status {
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .approve { background: green; color: white; }
+        .reject { background: red; color: white; }
+        .delivered { background: blue; color: white; }
+    </style>
+</head>
+<body>
+
+<h2>📦Admin Dashboard</h2>
+
+<!-- PRODUCTS SECTION -->
+<div class="section">
+    <h3>Manage Products</h3>
+    <input type="text" id="productName" placeholder="Product Name" required>
+    <input type="number" id="productPrice" placeholder="Product Price" required>
+    <input type="file" id="productImage" accept="image/*" required>
+    <button onclick="addProduct()">Add Product</button>
+
+    <h4>Products:</h4>
+    <div id="productList"></div>
+</div>
+
+<!-- ORDERS SECTION -->
+<div class="section">
+    <h3>Manage Orders</h3>
+    <div id="ordersContainer"></div>
+</div>
+
+<script>
+    // PRODUCT MANAGEMENT
+    let products = [];
+
+    function loadProducts() {
+        const savedProducts = localStorage.getItem('products');
+        if (savedProducts) products = JSON.parse(savedProducts);
+        renderProducts();
+    }
+
+    function saveProducts() {
+        localStorage.setItem('products', JSON.stringify(products));
+    }
+
+    function addProduct() {
+        const name = document.getElementById('productName').value.trim();
+        const price = document.getElementById('productPrice').value.trim();
+        const imageInput = document.getElementById('productImage');
+
+        if (!name || !price || imageInput.files.length === 0) {
+            alert("Please fill all fields and select an image.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageData = e.target.result;
+            const product = { name, price, image: imageData };
+            products.push(product);
+            saveProducts();
+            renderProducts();
+
+            document.getElementById('productName').value = "";
+            document.getElementById('productPrice').value = "";
+            imageInput.value = "";
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+    }
+
+    function deleteProduct(index) {
+        products.splice(index, 1);
+        saveProducts();
+        renderProducts();
+    }
+
+    function renderProducts() {
+        const productList = document.getElementById('productList');
+        productList.innerHTML = "";
+
+        products.forEach((product, index) => {
+            const div = document.createElement('div');
+            div.classList.add('product');
+            div.innerHTML = `
+                <strong>${product.name}</strong><br>
+                Price: ₹${product.price}<br>
+                <img src="${product.image}" width="150"><br>
+                <button onclick="deleteProduct(${index})">Delete</button>
+            `;
+            productList.appendChild(div);
+        });
+    }
+
+    loadProducts();
+
+    // ORDER MANAGEMENT
+    function loadOrders(){
+        let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+        const container = document.getElementById("ordersContainer");
+        container.innerHTML = "";
+
+        if(orders.length === 0){
+            container.innerHTML = "<p>No orders found.</p>";
+            return;
+        }
+
+        orders.forEach((order, index) => {
+            let itemsHTML = order.items.map(i =>
+                `<li>${i.name} - ${i.cost} (${i.gram}) ${i.custom ? " | Custom: " + i.custom : ""}</li>`
+            ).join("");
+
+            const div = document.createElement('div');
+            div.classList.add('order');
+            div.innerHTML = `
+                <h4>Order #${order.id}</h4>
+                <p><strong>Name:</strong> ${order.customer.name}</p>
+                <p><strong>Email:</strong> ${order.customer.email}</p>
+                <p><strong>Phone:</strong> ${order.customer.phone}</p>
+                <p><strong>Address:</strong> ${order.customer.address}</p>
+                <p><strong>Items:</strong></p>
+                <ul>${itemsHTML}</ul>
+                <p class="status">Status: ${order.status}</p>
+                <button class="approve" onclick="updateStatus(${index}, 'Approved')">Approve</button>
+                <button class="reject" onclick="updateStatus(${index}, 'Rejected')">Reject</button>
+                <button class="delivered" onclick="updateStatus(${index}, 'Delivered')">Mark Delivered</button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function updateStatus(index, status){
+        let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+        if(status === "Delivered"){
+            orders.splice(index, 1); // Remove delivered order
+        } else {
+            orders[index].status = status;
+        }
+        localStorage.setItem("orders", JSON.stringify(orders));
+        loadOrders();
+    }
+
+    loadOrders();
+</script>
+
+</body>
+</html>
